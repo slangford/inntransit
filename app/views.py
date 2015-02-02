@@ -12,7 +12,6 @@ import re
 import math
 from pythonds.basic import Queue
 from collections import defaultdict
-from Flask import current_app
 
 from flask import Flask
 app = Flask(__name__)
