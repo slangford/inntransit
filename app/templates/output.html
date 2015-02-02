@@ -1,0 +1,115 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="/static/images/businessmanblack.png">
+    <title>InnTransit</title>
+
+    <link href="/static/css/bootstrap.css" rel="stylesheet" media="screen">
+    <!--<link href="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.1/css/bootstrap.css" rel="stylesheet" media="screen">-->
+    <link href="/static/css/starter-template.css" rel="stylesheet">
+
+    <style>
+      #map-container { height: 400px }
+      #map-container { width: 40% }  
+      #map-container { float: right }    
+      #map-container { margin: 40px 10px}
+    </style>
+
+    <script src="http://maps.google.com/maps/api/js?sensor=false"></script>
+    <script src="/static/js/sorttable.js"></script>
+
+  </head>
+
+  <body>
+
+    <div class="banner">
+        <h1 small><img src="/static/images/businessman.png" width=60px>Inn Transit</h1 small>
+    </div>
+
+    <div class="research">
+        <form class="form-inline" action="/output" method="GET">
+        <div class="form-group">
+          <label for="strdate"></label>
+          <input type="text" id="strdate" name='strdate' placeholder="MM/DD/YYYY">
+        </div>
+        <div class="form-group">
+          <label for="enddate"></label>
+          <input type="text" id="enddate" name='enddate' placeholder="MM/DD/YYYY">
+        </div>
+
+        <div class="form-group" width=50%>
+          <label for="ttime"></label>
+          <input type="number" id="ttime" name='ttime' placeholder="max transit time">
+        </div>
+        <div class="form-group">
+          <button type="submit" class="btn btn-default">search again</button>
+        </div>
+        </form>
+    </div>
+
+    <br>
+
+
+      <div id="map-container" class="col-md-6"></div>
+      <script>  
+
+        markers_lat = {{ marker_lat }};
+        markers_lon = {{ marker_lon }};
+
+        var markerArray = [];      
+        for (var i = 0; i < markers_lat.length; i++) {
+            markerArray.push(new google.maps.LatLng(markers_lat[i],markers_lon[i]));
+        }
+
+        function initialize() {
+          var moscone = new google.maps.LatLng(37.783944, -122.401297);
+          var mapOptions = {
+            zoom: 13,
+            center: moscone
+          }
+          var map = new google.maps.Map(document.getElementById('map-container'), mapOptions);
+
+          for (var i = 0; i < markers_lat.length; i++) {
+            var marker = new google.maps.Marker({
+              position: markerArray[i],
+              map: map,
+            });
+          }
+        }
+        google.maps.event.addDomListener(window, 'load', initialize);
+
+      </script>
+
+    <div class="container">
+      
+      <!--<div class="headingline">
+        <p>Accommodation options within {{ threshold }} min walking time from Moscone Center, San Francisco CA for {{ strdate }}  to {{ enddate }}</p>
+      </div>-->
+
+
+      <table class="sortable">
+
+        <tr><th width=100px height=40px> </th><th width=300px>Hotels within {{ threshold }} min transit time</th><th width=75px> STARS</th><th width=60px> RATE</th></tr> 
+        {% for item in hotel %}
+        <tr><td><img src={{ item['image'] }}></td><td><a href={{ item['link'] }}>{{ item['name'] }}</a></td><td>{{ item['rating'] }}</td><td>${{ item['rate'] }}</td></tr>
+        {% endfor %}
+
+      </table>
+
+    </div><!-- /.container -->
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+  </body>
+</html>
+

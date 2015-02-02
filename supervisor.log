@@ -1,0 +1,22 @@
+2015-02-02 01:46:19,058 CRIT Set uid to user 0
+2015-02-02 01:46:19,060 INFO daemonizing the supervisord process
+2015-02-02 01:46:19,060 INFO supervisord started with pid 7365
+2015-02-02 01:46:20,063 INFO spawned: 'myserver' with pid 7366
+2015-02-02 01:46:20,135 DEBG 'myserver' stderr output:
+2015-02-02 01:46:20 [7366] [INFO] Starting gunicorn 17.5
+2015-02-02 01:46:20 [7366] [INFO] Listening at: http://0.0.0.0:80 (7366)
+2015-02-02 01:46:20 [7366] [INFO] Using worker: sync
+
+2015-02-02 01:46:20,136 DEBG 'myserver' stderr output:
+2015-02-02 01:46:20 [7371] [INFO] Booting worker with pid: 7371
+
+2015-02-02 01:46:20,218 DEBG 'myserver' stderr output:
+2015-02-02 01:46:20 [7374] [INFO] Booting worker with pid: 7374
+
+2015-02-02 01:46:20,224 DEBG 'myserver' stderr output:
+2015-02-02 01:46:20 [7375] [INFO] Booting worker with pid: 7375
+
+2015-02-02 01:46:20,272 DEBG 'myserver' stderr output:
+2015-02-02 01:46:20 [7376] [INFO] Booting worker with pid: 7376
+
+2015-02-02 01:46:21,273 INFO success: myserver entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)

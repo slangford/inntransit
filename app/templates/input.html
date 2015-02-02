@@ -1,0 +1,58 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="/static/images/businessmanblack.png">
+
+    <title>InnTransit</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/static/css/bootstrap.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="/static/css/starter-template.css" rel="stylesheet">
+
+  </head>
+
+  <body id="wrapper">
+
+    <div class="container">
+        <h1>Inn Transit<img src="/static/images/businessman.png" width=60px></h1>
+        <p>finding you accommodation within walking distance of Moscone Center, San Francisco</p>
+
+        <form class="form-inline" action="/output" method="GET">
+        <div class="form-group">
+          <label for="strdate"></label>
+          <input type="text" id="strdate" name='strdate' placeholder="MM/DD/YYYY">
+        </div>
+        <div class="form-group">
+          <label for="enddate"></label>
+          <input type="text" id="enddate" name='enddate' placeholder="MM/DD/YYYY">
+        </div>
+        <div class="form-group" width=50%>
+          <label for="ttime"></label>
+          <input type="number" id="ttime" name='ttime' placeholder="max transit time">
+        </div>
+        <div class="form-group">
+          <button type="submit" class="btn btn-default">find accommodation</button>
+
+      </form>
+
+    </div>
+    </div>
+
+    </div><!-- /.container -->
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+  </body>
+</html>
+
