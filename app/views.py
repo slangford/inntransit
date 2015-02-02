@@ -1,4 +1,3 @@
-from a_Model import ModelIt
 from flask import render_template, request
 from app import app
 import urllib2
@@ -14,6 +13,9 @@ import math
 from pythonds.basic import Queue
 from collections import defaultdict
 from Flask import current_app
+
+from flask import Flask
+app = Flask(__name__)
 
 @app.route('/input')
 def cities_input():
@@ -64,4 +66,5 @@ def cities_output():
     hotel_results.append(dict(name=hotel['name'],address=hotel['address1'],rating=hotel['hotelRating'],description=hotel['shortDescription'],image=image,link=hotel['deepLink'],rate=rate))
   return render_template("output.html", hotel=hotel_results, strdate=strID, enddate=endID, marker_lat=marker_lat, marker_lon=marker_lon, threshold=threshold)
 
-
+  if __name__ == "__main__":
+    app.run(host='0.0.0.0', port=5000)
