@@ -42,7 +42,7 @@ def cities_output():
   hotelId_file.close()
 
   ## URL to call expedia API : input startdate and enddate
-  expedia_api_url = 'http://dev.api.ean.com/ean-services/rs/hotel/v3/list?cid=55505&apiKey=current_app.config['apiKey']&customerUserAgent=current_app.config['customerUserAgent']&customerIpAddress=current_app.config['customerIpAddress']&apiExperience=PARTNER_BOT_CACHE&arrivalDate='
+  expedia_api_url = 'http://dev.api.ean.com/ean-services/rs/hotel/v3/list?cid=55505&apiKey='+current_app.config['apiKey']+'&customerUserAgent='+current_app.config['customerUserAgent']+'&customerIpAddress='+current_app.config['customerIpAddress']+'&apiExperience=PARTNER_BOT_CACHE&arrivalDate='
   expedia_api_url += str(strID)
   expedia_api_url += '&departureDate='
   expedia_api_url += str(endID)
