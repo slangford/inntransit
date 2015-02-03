@@ -13,10 +13,7 @@ import math
 from pythonds.basic import Queue
 from collections import defaultdict
 
-from flask import Flask
-app = Flask(__name__)
-
-@app.route('/input')
+@app.route('/')
 def cities_input():
   return render_template("input.html")
 
@@ -41,7 +38,7 @@ def cities_output():
   hotelId_file.close()
 
   ## URL to call expedia API : input startdate and enddate
-  expedia_api_url = 'http://dev.api.ean.com/ean-services/rs/hotel/v3/list?cid=55505&apiKey='+current_app.config['apiKey']+'&customerUserAgent='+current_app.config['customerUserAgent']+'&customerIpAddress='+current_app.config['customerIpAddress']+'&apiExperience=PARTNER_BOT_CACHE&arrivalDate='
+  expedia_api_url = 'http://dev.api.ean.com/ean-services/rs/hotel/v3/list?cid=55505&apiKey=9nkuwbprt9fwrrcesqa22r27&customerUserAgent=Mozilla%2F5.0%20(Macintosh%3B%20Intel%20Mac%20OS%20X%2010_10_1)%20AppleWebKit%2F537.36%20(KHTML%2C%20like%20Gecko)%20Chrome%2F39.0.2171.95%20Safari%2F537.36&customerIpAddress=65.87.19.170&apiExperience=PARTNER_BOT_CACHE&arrivalDate='
   expedia_api_url += str(strID)
   expedia_api_url += '&departureDate='
   expedia_api_url += str(endID)
@@ -65,5 +62,5 @@ def cities_output():
     hotel_results.append(dict(name=hotel['name'],address=hotel['address1'],rating=hotel['hotelRating'],description=hotel['shortDescription'],image=image,link=hotel['deepLink'],rate=rate))
   return render_template("output.html", hotel=hotel_results, strdate=strID, enddate=endID, marker_lat=marker_lat, marker_lon=marker_lon, threshold=threshold)
 
-  if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=5000)
+if __name__ == "__main__":
+  app.run():
