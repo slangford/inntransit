@@ -52,9 +52,6 @@
           markers_lat = {{ marker_lat }};
           markers_lon = {{ marker_lon }};
 
-          markers_edge_lat = {{ marker_edge_lat }};
-          markers_edge_lon = {{ marker_edge_lon }};
-
           var markerArray = [];      
           for (var i = 0; i < markers_lat.length; i++) {
             markerArray.push(new google.maps.LatLng(markers_lat[i],markers_lon[i]));
