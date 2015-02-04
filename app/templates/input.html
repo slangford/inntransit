@@ -23,30 +23,35 @@
 
     <div class="container">
         <h1>Inn Transit<img src="/static/images/businessman.png" width=60px></h1>
-        <p>finding you accommodation within walking distance of Moscone Center, San Francisco</p>
+        <p style="color:white">Finding you accommodation within public transport and/or walking range </br> of Moscone Center, San Francisco <a href="https://docs.google.com/presentation/d/1ZUzGu7kvJc_Gxf3pgzeMs4CJ9INXjmyB8i-fbowB2bo/pub?start=false&loop=false&delayms=3000" target="_blank">ABOUT</a></p>
 
+        <br><br><br>
         <form class="form-inline" action="/output" method="GET">
         <div class="form-group">
+          <p style="color:white"> Start Date </p>
           <label for="strdate"></label>
           <input type="text" id="strdate" name='strdate' placeholder="MM/DD/YYYY">
         </div>
         <div class="form-group">
+          <p style="color:white"> End Date </p>
           <label for="enddate"></label>
           <input type="text" id="enddate" name='enddate' placeholder="MM/DD/YYYY">
         </div>
         <div class="form-group" width=50%>
+          <p style="color:white"> Max Transit Time </p>
           <label for="ttime"></label>
-          <input type="number" id="ttime" name='ttime' placeholder="max transit time">
+          <input type="number" id="ttime" name='ttime' placeholder="mins">
         </div>
         <div class="form-group">
+          <p> </p>
+          <br>
           <button type="submit" class="btn btn-default">find accommodation</button>
-
-      </form>
-
-    </div>
+        </div>
+     </form>
     </div>
 
     </div><!-- /.container -->
+
 
     <!-- Bootstrap core JavaScript
     ================================================== -->

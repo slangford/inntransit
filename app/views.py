@@ -34,6 +34,8 @@ def cities_output():
   if(float(threshold) > 30):
     hotelId_file = open('hotelID_45min_san_francisco.pk1', 'rb')
 
+  status_file = open('hotelID_45min_san_francisco.pk1', 'rb')
+
   hotelIdlist = pickle.load(hotelId_file)
   hotelId_file.close()
 
@@ -59,8 +61,8 @@ def cities_output():
     marker_lon.append(hotel['longitude'])
     image = "http://images.travelnow.com"+hotel['thumbNailUrl']
     rate = "%.2f" % float(hotel['RoomRateDetailsList']['RoomRateDetails']['RateInfo']['ChargeableRateInfo']['@averageRate'])
-    hotel_results.append(dict(name=hotel['name'],address=hotel['address1'],rating=hotel['hotelRating'],description=hotel['shortDescription'],image=image,link=hotel['deepLink'],rate=rate))
-  return render_template("output.html", hotel=hotel_results, strdate=strID, enddate=endID, marker_lat=marker_lat, marker_lon=marker_lon, threshold=threshold)
+    hotel_results.append(dict(name=hotel['name'],address=hotel['address1'],rating=int(hotel['hotelRating']),description=hotel['shortDescription'],image=image,link=hotel['deepLink'],rate=rate))
+  return render_template("output.html", hotel=hotel_results, strdate=strID, enddate=endID, marker_lat=marker_lat, marker_lon=marker_lon, marker_edge_lat=marker_edge_lat, marker_edge_lon=marker_edge_lon, threshold=threshold)
 
 if __name__ == "__main__":
-  app.run():
+  app.run()

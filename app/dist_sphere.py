@@ -18,7 +18,6 @@ def distance_on_unit_sphere(lat1, long1, lat2, long2):
 def distance_between_points(lat1, long1, lat2, long2):
     """ function to calculate the distance in miles between two nodes assuming straight line on flat surface """
 
-
     xdiff = abs(long2 - long1)*57.912
     ydiff = abs(lat2 - lat1)*69.172
     distance = (xdiff**2 + ydiff**2)**(0.5)

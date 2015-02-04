@@ -27,84 +27,87 @@
   </head>
 
   <body>
-
     <div class="banner">
-        <h1 small><img src="/static/images/businessman.png" width=60px>Inn Transit</h1 small>
+        <h1 style="font-size:30pt"><img src="/static/images/businessman.png" width=40px>Inn Transit</h1>
+    </div>
+    <br>
+    <div class="sub_banner">
+      <p style="font-size:16pt"> Results for your search within {{ threshold }} min transit time <br>
+        from Moscone Center, SF for {{ strdate }} to {{ enddate }}. </p>    
     </div>
 
-    <div class="research">
-        <form class="form-inline" action="/output" method="GET">
+    <div class="row">
+
+      <div class="col-md-6">
+        <table class="sortable">
+        <tr><td width=10% height=50px> </td><td width=75%></td><th width=15%> PRICE</th></tr> 
+        {% for item in hotel %}
+        <tr><td style="padding:20px"><img src={{ item['image'] }}></td><td> <b>{{ item['name'] }} </b><br> {{ item['rating'] }}&#9733; <br> <a href={{ item['link'] }} target="_blank">Book it now!</a></td><td>${{ item['rate'] }} <br> avg nightly</td></tr>
+        {% endfor %}
+        </table>
+      </div>
+
+      <div id="map-container" class="col-md-6"></div>        
+      <script>  
+          markers_lat = {{ marker_lat }};
+          markers_lon = {{ marker_lon }};
+
+          markers_edge_lat = {{ marker_edge_lat }};
+          markers_edge_lon = {{ marker_edge_lon }};
+
+          var markerArray = [];      
+          for (var i = 0; i < markers_lat.length; i++) {
+            markerArray.push(new google.maps.LatLng(markers_lat[i],markers_lon[i]));
+          }
+          function initialize() {
+            var moscone = new google.maps.LatLng(37.783944, -122.401297);
+            var mapOptions = {
+              zoom: 11,
+              center: moscone
+            }
+            var map = new google.maps.Map(document.getElementById('map-container'), mapOptions);
+            for (var i = 0; i < markers_lat.length; i++) {
+              var marker = new google.maps.Marker({
+                position: markerArray[i],
+                map: map,
+             });
+            }
+          }
+         google.maps.event.addDomListener(window, 'load', initialize);
+
+      </script>
+
+
+      <div class="container col-md-6">
+
+        <form action="/output" method="GET">
         <div class="form-group">
+          <p > Start Date </p>
           <label for="strdate"></label>
           <input type="text" id="strdate" name='strdate' placeholder="MM/DD/YYYY">
         </div>
         <div class="form-group">
+          <p > End Date </p>
           <label for="enddate"></label>
           <input type="text" id="enddate" name='enddate' placeholder="MM/DD/YYYY">
         </div>
-
         <div class="form-group" width=50%>
+          <p> Max Transit Time </p>
           <label for="ttime"></label>
-          <input type="number" id="ttime" name='ttime' placeholder="max transit time">
+          <input type="number" id="ttime" name='ttime' placeholder="mins">
         </div>
         <div class="form-group">
+          <p> </p>
+          <br>
           <button type="submit" class="btn btn-default">search again</button>
         </div>
-        </form>
-    </div>
-
-    <br>
-
-
-      <div id="map-container" class="col-md-6"></div>
-      <script>  
-
-        markers_lat = {{ marker_lat }};
-        markers_lon = {{ marker_lon }};
-
-        var markerArray = [];      
-        for (var i = 0; i < markers_lat.length; i++) {
-            markerArray.push(new google.maps.LatLng(markers_lat[i],markers_lon[i]));
-        }
-
-        function initialize() {
-          var moscone = new google.maps.LatLng(37.783944, -122.401297);
-          var mapOptions = {
-            zoom: 13,
-            center: moscone
-          }
-          var map = new google.maps.Map(document.getElementById('map-container'), mapOptions);
-
-          for (var i = 0; i < markers_lat.length; i++) {
-            var marker = new google.maps.Marker({
-              position: markerArray[i],
-              map: map,
-            });
-          }
-        }
-        google.maps.event.addDomListener(window, 'load', initialize);
-
-      </script>
-
-    <div class="container">
+     </form>
+</div>
       
-      <!--<div class="headingline">
-        <p>Accommodation options within {{ threshold }} min walking time from Moscone Center, San Francisco CA for {{ strdate }}  to {{ enddate }}</p>
-      </div>-->
+      </div>
 
-
-      <table class="sortable">
-
-        <tr><th width=100px height=40px> </th><th width=300px>Hotels within {{ threshold }} min transit time</th><th width=75px> STARS</th><th width=60px> RATE</th></tr> 
-        {% for item in hotel %}
-        <tr><td><img src={{ item['image'] }}></td><td><a href={{ item['link'] }}>{{ item['name'] }}</a></td><td>{{ item['rating'] }}</td><td>${{ item['rate'] }}</td></tr>
-        {% endfor %}
-
-      </table>
-
-    </div><!-- /.container -->
-
-
+    </div>
+  
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
