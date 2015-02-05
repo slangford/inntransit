@@ -20,8 +20,8 @@ body{
   background-repeat:no-repeat;
 }
 table.sortable thead {
-    background-color:#666666;
-    color:white;
+    background-color: white;
+    color:black;
     font-weight: bold;
     font-family: sans-serif;
     border-spacing: 2px;
@@ -32,7 +32,7 @@ table.sortable thead {
     text-align: right;
     padding: 1px 25px;
     background-image:url("/static/images/san-francisco-hd.jpg");
-    background-size: 18%;
+    background-size: 16%;
 }
 .sub_banner{
     height:80px;
@@ -1608,6 +1608,8 @@ pre code {
 }
 .container {
   text-align: center;
+  margin-right: auto;
+  margin-left: auto;
 }
 .map-container{
   margin-right: auto;

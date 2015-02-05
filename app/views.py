@@ -1,8 +1,8 @@
-from flask import render_template, request
+from flask import render_template, request, current_app
 from app import app
 import urllib2
 import json 
-import startnode
+import findnode
 import graphfns
 import dist_sphere
 import bfs
@@ -14,16 +14,33 @@ from pythonds.basic import Queue
 from collections import defaultdict
 
 @app.route('/')
-def cities_input():
+def input():
   return render_template("input.html")
 
 @app.route('/output')
-def cities_output():
+def output():
   #pull 'ID' from input field and store it
   strID = request.args.get('strdate')
   endID = request.args.get('enddate')
   threshold = request.args.get('ttime')
   moscone_location = (-122.401626,37.784138)
+
+  startnodeID = findnode.find_closest_node(current_app.cornerdict, moscone_location)
+  statusdict = bfs.bfs_graph(threshold, startnodeID, current_app.graphdict, current_app.nodedict)
+
+  edge_marker_lat = []
+  edge_marker_lon = []
+  for key in dict.keys(current_app.nodedict):
+      if statusdict[key] == 'outside':
+        edge_marker_lat.append(current_app.nodedict[key][1])
+        edge_marker_lon.append(current_app.nodedict[key][0])
+
+  #hotelinsidelist = []
+  #for key in dict.keys(current_app.hotelIDlist):
+  #  nodeID = findnode.find_closest_node(current_app.cornerdict, current_app.hotelIDlist[key])
+  #  if nodeID != 0:
+  #    if statusdict[nodeID] == 'inside':
+  #      hotelinsidelist.append(long(key))
 
   if(float(threshold) > 0 and float(threshold) <= 10):
     hotelId_file = open('hotelID_10min_san_francisco.pk1', 'rb')
@@ -33,8 +50,7 @@ def cities_output():
     hotelId_file = open('hotelID_30min_san_francisco.pk1', 'rb')
   if(float(threshold) > 30):
     hotelId_file = open('hotelID_45min_san_francisco.pk1', 'rb')
-
-  hotelIdlist = pickle.load(hotelId_file)
+  hotelinsidelist = pickle.load(hotelId_file)
   hotelId_file.close()
 
   ## URL to call expedia API : input startdate and enddate
@@ -44,8 +60,8 @@ def cities_output():
   expedia_api_url += str(endID)
   expedia_api_url += '&hotelIdList='
 
-  for hotel in hotelIdlist:
-    expedia_api_url += str(hotel)+','
+  for hotel_id in hotelinsidelist:
+    expedia_api_url += str(hotel_id)+','
 
   expedia_api_response = urllib2.urlopen(expedia_api_url)
   expedia_api_jsondata = json.loads(expedia_api_response.read())
@@ -60,7 +76,7 @@ def cities_output():
     image = "http://images.travelnow.com"+hotel['thumbNailUrl']
     rate = "%.2f" % float(hotel['RoomRateDetailsList']['RoomRateDetails']['RateInfo']['ChargeableRateInfo']['@averageRate'])
     hotel_results.append(dict(name=hotel['name'],address=hotel['address1'],rating=int(hotel['hotelRating']),description=hotel['shortDescription'],image=image,link=hotel['deepLink'],rate=rate))
-  return render_template("output.html", hotel=hotel_results, strdate=strID, enddate=endID, marker_lat=marker_lat, marker_lon=marker_lon, threshold=threshold)
+  return render_template("output.html", hotel_results=hotel_results, strdate=strID, enddate=endID, marker_lat=marker_lat, marker_lon=marker_lon, threshold=threshold, edge_marker_lat=edge_marker_lat, edge_marker_lon=edge_marker_lon)
 
 if __name__ == "__main__":
   app.run()

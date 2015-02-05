@@ -39,10 +39,12 @@
     <div class="row">
 
       <div class="col-md-6">
+
+        <br><br>
         <table class="sortable">
-        <tr><td width=10% height=50px> </td><td width=75%></td><th width=15%> PRICE</th></tr> 
-        {% for item in hotel %}
-        <tr><td style="padding:20px"><img src={{ item['image'] }}></td><td> <b>{{ item['name'] }} </b><br> {{ item['rating'] }}&#9733; <br> <a href={{ item['link'] }} target="_blank">Book it now!</a></td><td>${{ item['rate'] }} <br> avg nightly</td></tr>
+        <tr><th></th><th></th><th><a class="btn btn-default">sort by PRICE</a></th><th></th></tr> 
+        {% for item in hotel_results %}
+        <tr><td style="padding:20px"><img src={{ item['image'] }}></td><td> <b>{{ item['name'] }} </b><br> {% for i in range(item['rating']) %} &#9733; {% endfor %} <br> <a href={{ item['link'] }} target="_blank">Book it now!</a></td><td class="hidden">{{ item['rate'] }}</td><td>${{ item['rate'] }} <br> avg nightly</td></tr>
         {% endfor %}
         </table>
       </div>
@@ -52,10 +54,18 @@
           markers_lat = {{ marker_lat }};
           markers_lon = {{ marker_lon }};
 
+          //node_markers_lat = {{ edge_marker_lat }};
+          //node_markers_lon = {{ edge_marker_lon }};
+
           var markerArray = [];      
           for (var i = 0; i < markers_lat.length; i++) {
-            markerArray.push(new google.maps.LatLng(markers_lat[i],markers_lon[i]));
+              markerArray.push(new google.maps.LatLng(markers_lat[i],markers_lon[i]));
           }
+          //var edgeArray = [];      
+          //for (var j = 0; j < edge_markers_lat.length; j++) {
+          //  edgeArray.push(new google.maps.LatLng(edge_markers_lat[j],edge_markers_lon[j]));
+          //}
+
           function initialize() {
             var moscone = new google.maps.LatLng(37.783944, -122.401297);
             var mapOptions = {
@@ -63,11 +73,19 @@
               center: moscone
             }
             var map = new google.maps.Map(document.getElementById('map-container'), mapOptions);
+
             for (var i = 0; i < markers_lat.length; i++) {
-              var marker = new google.maps.Marker({
-                position: markerArray[i],
-                map: map,
-             });
+               var marker = new google.maps.Marker({
+               position: markerArray[i],
+               map: map,
+            });
+
+            //for (var j = 0; j < node_markers_lat.length; j++) {
+            //  var node_marker = new google.maps.Marker({
+            //  position: edgeArray[j],
+            //  map: map,
+              //  icon: &#149;,
+            //});
             }
           }
          google.maps.event.addDomListener(window, 'load', initialize);

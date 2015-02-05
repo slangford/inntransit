@@ -20,27 +20,32 @@
   </head>
 
   <body id="wrapper">
-
+    <br>
+    &nbsp;&nbsp;&nbsp; <a href="https://docs.google.com/presentation/d/1H1nD2M2GDKQFpeiRMV1v_NL3x_fU4I90-Eqfj0zsIkQ/pub?start=false&loop=false&delayms=3000" target="_blank" style="color:white">ABOUT</a>
     <div class="container">
         <h1>Inn Transit<img src="/static/images/businessman.png" width=60px></h1>
-        <p style="color:white">Finding you accommodation within public transport and/or walking range </br> of Moscone Center, San Francisco <a href="https://docs.google.com/presentation/d/1ZUzGu7kvJc_Gxf3pgzeMs4CJ9INXjmyB8i-fbowB2bo/pub?start=false&loop=false&delayms=3000" target="_blank">ABOUT</a></p>
-
-        <br><br><br>
+        <p style="color:white">Optimizing your accommodation options in walkable cities.</p>
+        <br>
         <form class="form-inline" action="/output" method="GET">
+        <div class="form-group">
+          <p style="color:white"> Location </p>
+          <label for="location"></label>
+          <input class=text-center type="text" id="location" name='location' placeholder="Moscone Center, SF">
+        </div>         
         <div class="form-group">
           <p style="color:white"> Start Date </p>
           <label for="strdate"></label>
-          <input type="text" id="strdate" name='strdate' placeholder="MM/DD/YYYY">
+          <input class=text-center type="text" id="strdate" name='strdate' placeholder="MM/DD/YYYY">
         </div>
         <div class="form-group">
           <p style="color:white"> End Date </p>
           <label for="enddate"></label>
-          <input type="text" id="enddate" name='enddate' placeholder="MM/DD/YYYY">
+          <input class=text-center type="text" id="enddate" name='enddate' placeholder="MM/DD/YYYY">
         </div>
         <div class="form-group" width=50%>
-          <p style="color:white"> Max Transit Time </p>
+          <p style="color:white" > Max Transit Time </p>
           <label for="ttime"></label>
-          <input type="number" id="ttime" name='ttime' placeholder="mins">
+          <input class=text-center type="number" id="ttime" name='ttime' placeholder="20 mins">
         </div>
         <div class="form-group">
           <p> </p>
