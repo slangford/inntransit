@@ -71,7 +71,7 @@ def output():
     image = "http://images.travelnow.com"+hotel['thumbNailUrl']
     rate = "%.2f" % float(hotel['RoomRateDetailsList']['RoomRateDetails']['RateInfo']['ChargeableRateInfo']['@averageRate'])
     hotel_results.append(dict(hotelidarray=hotel['hotelId'],name=hotel['name'],address=hotel['address1'],rating=int(hotel['hotelRating']),description=hotel['shortDescription'],image=image,link=hotel['deepLink'],rate=rate))
-  return render_template("output.html", hotel_results=hotel_results, strdate=strID, enddate=endID, marker_lat=marker_lat, marker_lon=marker_lon, threshold=threshold, edge_marker_lat=edge_marker_lat, edge_marker_lon=edge_marker_lon, startnode=startnodeID,map_name=map_name)
+  return render_template("output.html", hotel_results=hotel_results, strdate=strID, enddate=endID, marker_lat=marker_lat, marker_lon=marker_lon, threshold=threshold,startnode=startnodeID)
 
 if __name__ == "__main__":
   app.run()
