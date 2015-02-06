@@ -1,4 +1,4 @@
-from flask import render_template, request, current_app
+from flask import render_template, request, app
 from app import app
 import urllib2
 import json 
@@ -25,31 +25,26 @@ def output():
   threshold = request.args.get('ttime')
   moscone_location = (-122.401626,37.784138)
 
-  startnodeID = findnode.find_closest_node(current_app.cornerdict, moscone_location)
-  statusdict = bfs.bfs_graph(threshold, startnodeID, current_app.graphdict, current_app.nodedict)
-
-  edge_marker_lat = []
-  edge_marker_lon = []
-  for key in dict.keys(current_app.nodedict):
-      if statusdict[key] == 'outside':
-        edge_marker_lat.append(current_app.nodedict[key][1])
-        edge_marker_lon.append(current_app.nodedict[key][0])
-
-  #hotelinsidelist = []
-  #for key in dict.keys(current_app.hotelIDlist):
-  #  nodeID = findnode.find_closest_node(current_app.cornerdict, current_app.hotelIDlist[key])
-  #  if nodeID != 0:
-  #    if statusdict[nodeID] == 'inside':
-  #      hotelinsidelist.append(long(key))
-
-  if(float(threshold) > 0 and float(threshold) <= 10):
-    hotelId_file = open('hotelID_10min_san_francisco.pk1', 'rb')
-  if(float(threshold) > 10 and float(threshold) <= 20):
-    hotelId_file = open('hotelID_20min_san_francisco.pk1', 'rb')
-  if(float(threshold) > 20 and float(threshold) <= 30):
-    hotelId_file = open('hotelID_30min_san_francisco.pk1', 'rb')
-  if(float(threshold) > 30):
-    hotelId_file = open('hotelID_45min_san_francisco.pk1', 'rb')
+  if(float(threshold) > 0 and float(threshold) <= 5):
+    hotelId_file = open('osm_hotels_5min_san_francisco.pk1', 'rb')
+  if(float(threshold) > 5 and float(threshold) <= 10):
+    hotelId_file = open('osm_hotels_10min_san_francisco.pk1', 'rb')
+  if(float(threshold) > 10 and float(threshold) <= 15):
+    hotelId_file = open('osm_hotels_15min_san_francisco.pk1', 'rb')
+  if(float(threshold) > 15 and float(threshold) <= 20):
+    hotelId_file = open('osm_hotels_20min_san_francisco.pk1', 'rb')
+  if(float(threshold) > 20 and float(threshold) <= 25):
+    hotelId_file = open('osm_hotels_25min_san_francisco.pk1', 'rb')
+  if(float(threshold) > 25 and float(threshold) <= 30):
+    hotelId_file = open('osm_hotels_30min_san_francisco.pk1', 'rb')
+  if(float(threshold) > 35 and float(threshold) <= 40):
+    hotelId_file = open('osm_hotels_35min_san_francisco.pk1', 'rb')
+  if(float(threshold) > 40 and float(threshold) <= 45):
+    hotelId_file = open('osm_hotels_40min_san_francisco.pk1', 'rb')
+  if(float(threshold) > 45 and float(threshold) <= 60):
+    hotelId_file = open('osm_hotels_45min_san_francisco.pk1', 'rb')
+  if(float(threshold) > 60):
+    hotelId_file = open('osm_hotels_60min_san_francisco.pk1', 'rb')
   hotelinsidelist = pickle.load(hotelId_file)
   hotelId_file.close()
 
@@ -75,8 +70,8 @@ def output():
     marker_lon.append(hotel['longitude'])
     image = "http://images.travelnow.com"+hotel['thumbNailUrl']
     rate = "%.2f" % float(hotel['RoomRateDetailsList']['RoomRateDetails']['RateInfo']['ChargeableRateInfo']['@averageRate'])
-    hotel_results.append(dict(name=hotel['name'],address=hotel['address1'],rating=int(hotel['hotelRating']),description=hotel['shortDescription'],image=image,link=hotel['deepLink'],rate=rate))
-  return render_template("output.html", hotel_results=hotel_results, strdate=strID, enddate=endID, marker_lat=marker_lat, marker_lon=marker_lon, threshold=threshold, edge_marker_lat=edge_marker_lat, edge_marker_lon=edge_marker_lon)
+    hotel_results.append(dict(hotelidarray=hotel['hotelId'],name=hotel['name'],address=hotel['address1'],rating=int(hotel['hotelRating']),description=hotel['shortDescription'],image=image,link=hotel['deepLink'],rate=rate))
+  return render_template("output.html", hotel_results=hotel_results, strdate=strID, enddate=endID, marker_lat=marker_lat, marker_lon=marker_lon, threshold=threshold, edge_marker_lat=edge_marker_lat, edge_marker_lon=edge_marker_lon, startnode=startnodeID,map_name=map_name)
 
 if __name__ == "__main__":
   app.run()

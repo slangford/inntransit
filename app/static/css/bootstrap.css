@@ -26,6 +26,9 @@ table.sortable thead {
     font-family: sans-serif;
     border-spacing: 2px;
 }
+.map {
+    padding: 0px;
+}
 .banner{
     background-color: #000000;
     height:100px;
