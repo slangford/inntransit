@@ -65,7 +65,8 @@
         <table class="sortable" >
         <tr><th></th><th></th><th><a class="btn btn-default">sort by PRICE</a></th><th></th><th><a class="btn btn-default">sort by TIME</a></th><th></th></tr> 
         {% for item in hotel_results %}
-        <tr id={{ item['hotelidarray'] }}><td style="padding:20px"><img src={{ item['image'] }}></td><td> <b>{{ item['name'] }} </b><br> {% for i in range(item['rating']) %} &#9733; {% endfor %} <br> <a href={{ item['link'] }} target="_blank">Book it now!</a></td><td class="hidden">{{ item['rate'] }}</td><td>${{ item['rate'] }} <br> avg nightly</td><td class="hidden">{{ item['maxtime'] }}</td><td>{{ item['maxtime'] }} mins</td></tr>
+
+        <tr id={{ item['hotelidarray'] }} data-bind="event: {mouseover: hovered, mouseleave: unhovered}"><td style="padding:20px"><img src={{ item['image'] }}></td><td> <b>{{ item['name'] }} </b><br> {% for i in range(item['rating']) %} &#9733; {% endfor %} <br> <a href={{ item['link'] }} target="_blank">Book it now!</a></td><td class="hidden">{{ item['rate'] }}</td><td>${{ item['rate'] }} <br> avg nightly</td><td class="hidden">{{ item['maxtime'] }}</td><td>{{ item['maxtime'] }} mins</td></tr>
         {% endfor %}
         </table>
       </div>
@@ -77,6 +78,17 @@
         <script>  
           markers_lat = {{ marker_lat }};
           markers_lon = {{ marker_lon }};
+
+          var pinColor_nohover = "1D7BfD";
+          var pinImage_nohover = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + pinColor_nohover,
+                new google.maps.Size(21, 34),
+                new google.maps.Point(0,0),
+                new google.maps.Point(10, 34));
+          var pinColor_hover = "FD1D7B";
+          var pinImage_hover = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + pinColor_hover,
+                new google.maps.Size(21, 34),
+                new google.maps.Point(0,0),
+                new google.maps.Point(10, 34));
 
           var markerArray = [];      
           for (var i = 0; i < markers_lat.length; i++) {
@@ -94,15 +106,26 @@
                var marker = new google.maps.Marker({
                position: markerArray[i],
                map: map,
+               icon: pinImage_nohover
             });
-            }
 
-            var pinColor = "7569FE";
+            google.maps.event.addListener(marker, 'mouseover', (function(marker, i) {
+            return function() {
+                marker.setIcon(pinImage_hover);
+            }
+            })(marker, i));
+            google.maps.event.addListener(marker, 'mouseout', (function(marker, i) {
+            return function() {
+                marker.setIcon(pinImage_nohover);
+            }
+            })(marker, i));
+
+            }
+            var pinColor = "1DFD9F";
             var pinImage = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + pinColor,
               new google.maps.Size(21, 34),
               new google.maps.Point(0,0),
               new google.maps.Point(10, 34));
-
             var marker = new google.maps.Marker({
               position: moscone,
               map: map,
