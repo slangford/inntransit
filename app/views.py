@@ -1,4 +1,4 @@
-from flask import render_template, request, app
+from flask import render_template, request, app, Flask, flash, url_for
 from app import app
 import urllib2
 import json 
@@ -15,7 +15,11 @@ from collections import defaultdict
 
 @app.route('/')
 def input():
-  return render_template("input.html")
+  return render_template('input.html')
+
+@app.route('/error')
+def error():
+  return render_template('error.html')
 
 @app.route('/output')
 def output():
@@ -24,54 +28,60 @@ def output():
   endID = request.args.get('enddate')
   threshold = request.args.get('ttime')
   moscone_location = (-122.401626,37.784138)
+  if strID > endID:
+    error = 'Departure date before arrival date'
+    return render_template('error.html', error=error)
+  else:
 
-  if(float(threshold) > 0 and float(threshold) <= 5):
-    hotelId_file = open('osm_hotels_5min_san_francisco.pk1', 'rb')
-  if(float(threshold) > 5 and float(threshold) <= 10):
-    hotelId_file = open('osm_hotels_10min_san_francisco.pk1', 'rb')
-  if(float(threshold) > 10 and float(threshold) <= 15):
-    hotelId_file = open('osm_hotels_15min_san_francisco.pk1', 'rb')
-  if(float(threshold) > 15 and float(threshold) <= 20):
-    hotelId_file = open('osm_hotels_20min_san_francisco.pk1', 'rb')
-  if(float(threshold) > 20 and float(threshold) <= 25):
-    hotelId_file = open('osm_hotels_25min_san_francisco.pk1', 'rb')
-  if(float(threshold) > 25 and float(threshold) <= 30):
-    hotelId_file = open('osm_hotels_30min_san_francisco.pk1', 'rb')
-  if(float(threshold) > 35 and float(threshold) <= 40):
-    hotelId_file = open('osm_hotels_35min_san_francisco.pk1', 'rb')
-  if(float(threshold) > 40 and float(threshold) <= 45):
-    hotelId_file = open('osm_hotels_40min_san_francisco.pk1', 'rb')
-  if(float(threshold) > 45 and float(threshold) <= 60):
-    hotelId_file = open('osm_hotels_45min_san_francisco.pk1', 'rb')
-  if(float(threshold) > 60):
-    hotelId_file = open('osm_hotels_60min_san_francisco.pk1', 'rb')
-  hotelinsidelist = pickle.load(hotelId_file)
-  hotelId_file.close()
+    if(float(threshold) > 0 and float(threshold) <= 5):
+      hotelId_file = open('osm_hotels_5min_san_francisco.pk1', 'rb')
+    if(float(threshold) > 5 and float(threshold) <= 10):
+      hotelId_file = open('osm_hotels_10min_san_francisco.pk1', 'rb')
+    if(float(threshold) > 10 and float(threshold) <= 15):
+      hotelId_file = open('osm_hotels_15min_san_francisco.pk1', 'rb')
+    if(float(threshold) > 15 and float(threshold) <= 20):
+      hotelId_file = open('osm_hotels_20min_san_francisco.pk1', 'rb')
+    if(float(threshold) > 20 and float(threshold) <= 25):
+      hotelId_file = open('osm_hotels_25min_san_francisco.pk1', 'rb')
+    if(float(threshold) > 25 and float(threshold) <= 30):
+      hotelId_file = open('osm_hotels_30min_san_francisco.pk1', 'rb')
+    if(float(threshold) > 35 and float(threshold) <= 40):
+      hotelId_file = open('osm_hotels_35min_san_francisco.pk1', 'rb')
+    if(float(threshold) > 40 and float(threshold) <= 45):
+      hotelId_file = open('osm_hotels_40min_san_francisco.pk1', 'rb')
+    if(float(threshold) > 45 and float(threshold) <= 60):
+      hotelId_file = open('osm_hotels_45min_san_francisco.pk1', 'rb')
+    if(float(threshold) > 60):
+      hotelId_file = open('osm_hotels_60min_san_francisco.pk1', 'rb')
+    hotelinsidelist = pickle.load(hotelId_file)
+    hotelId_file.close()
 
-  ## URL to call expedia API : input startdate and enddate
-  expedia_api_url = 'http://dev.api.ean.com/ean-services/rs/hotel/v3/list?cid=55505&apiKey=9nkuwbprt9fwrrcesqa22r27&customerUserAgent=Mozilla%2F5.0%20(Macintosh%3B%20Intel%20Mac%20OS%20X%2010_10_1)%20AppleWebKit%2F537.36%20(KHTML%2C%20like%20Gecko)%20Chrome%2F39.0.2171.95%20Safari%2F537.36&customerIpAddress=65.87.19.170&apiExperience=PARTNER_BOT_CACHE&arrivalDate='
-  expedia_api_url += str(strID)
-  expedia_api_url += '&departureDate='
-  expedia_api_url += str(endID)
-  expedia_api_url += '&hotelIdList='
+    threshold_hotel = dict(zip(hotelinsidelist, ['20']*len(hotelinsidelist)))
 
-  for hotel_id in hotelinsidelist:
-    expedia_api_url += str(hotel_id)+','
+    ## URL to call expedia API : input startdate and enddate
+    expedia_api_url = 'http://dev.api.ean.com/ean-services/rs/hotel/v3/list?cid=55505&apiKey=9nkuwbprt9fwrrcesqa22r27&customerUserAgent=Mozilla%2F5.0%20(Macintosh%3B%20Intel%20Mac%20OS%20X%2010_10_1)%20AppleWebKit%2F537.36%20(KHTML%2C%20like%20Gecko)%20Chrome%2F39.0.2171.95%20Safari%2F537.36&customerIpAddress=65.87.19.170&apiExperience=PARTNER_BOT_CACHE&arrivalDate='
+    expedia_api_url += str(strID)
+    expedia_api_url += '&departureDate='
+    expedia_api_url += str(endID)
+    expedia_api_url += '&hotelIdList='
 
-  expedia_api_response = urllib2.urlopen(expedia_api_url)
-  expedia_api_jsondata = json.loads(expedia_api_response.read())
+    for hotel_id in hotelinsidelist:
+      expedia_api_url += str(hotel_id)+','
 
-  # make lists of hotel details to return to output page
-  hotel_results = []
-  marker_lon = []
-  marker_lat = []
-  for hotel in expedia_api_jsondata['HotelListResponse']['HotelList']['HotelSummary']:
-    marker_lat.append(hotel['latitude'])    
-    marker_lon.append(hotel['longitude'])
-    image = "http://images.travelnow.com"+hotel['thumbNailUrl']
-    rate = "%.2f" % float(hotel['RoomRateDetailsList']['RoomRateDetails']['RateInfo']['ChargeableRateInfo']['@averageRate'])
-    hotel_results.append(dict(hotelidarray=hotel['hotelId'],name=hotel['name'],address=hotel['address1'],rating=int(hotel['hotelRating']),description=hotel['shortDescription'],image=image,link=hotel['deepLink'],rate=rate))
-  return render_template("output.html", hotel_results=hotel_results, strdate=strID, enddate=endID, marker_lat=marker_lat, marker_lon=marker_lon, threshold=threshold)
+    expedia_api_response = urllib2.urlopen(expedia_api_url)
+    expedia_api_jsondata = json.loads(expedia_api_response.read())
+
+    # make lists of hotel details to return to output page
+    hotel_results = []
+    marker_lon = []
+    marker_lat = []
+    for hotel in expedia_api_jsondata['HotelListResponse']['HotelList']['HotelSummary']:
+      marker_lat.append(hotel['latitude'])    
+      marker_lon.append(hotel['longitude'])
+      image = "http://images.travelnow.com"+hotel['thumbNailUrl']
+      rate = "%.2f" % float(hotel['RoomRateDetailsList']['RoomRateDetails']['RateInfo']['ChargeableRateInfo']['@averageRate'])
+      hotel_results.append(dict(hotelidarray=hotel['hotelId'],name=hotel['name'],address=hotel['address1'],rating=int(hotel['hotelRating']),description=hotel['shortDescription'],image=image,link=hotel['deepLink'],rate=rate, maxtime=threshold_hotel[hotel['hotelId']]))
+    return render_template("output.html", hotel_results=hotel_results, strdate=strID, enddate=endID, marker_lat=marker_lat, marker_lon=marker_lon, threshold=threshold)
 
 if __name__ == "__main__":
   app.run()

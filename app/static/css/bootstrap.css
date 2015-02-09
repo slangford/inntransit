@@ -19,6 +19,14 @@ body{
   background-size:cover;
   background-repeat:no-repeat;
 }
+#wrapper_output{
+  background-image:url("/static/images/san-francisco-hd.jpg");
+  background-repeat:no-repeat;
+  background-attachment: fixed;
+  background-position: center;
+  background-size: 1500px;
+
+}
 table.sortable thead {
     background-color: white;
     color:black;
@@ -30,16 +38,14 @@ table.sortable thead {
     padding: 0px;
 }
 .banner{
-    background-color: #000000;
-    height:100px;
+    height:80px;
     text-align: right;
     padding: 1px 25px;
-    background-image:url("/static/images/san-francisco-hd.jpg");
     background-size: 16%;
 }
 .sub_banner{
-    height:80px;
-    text-align: center;
+    height:40px;
+    text-align: left;
 }
 .headingline{
     text-align: center;
