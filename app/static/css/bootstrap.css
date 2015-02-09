@@ -2357,9 +2357,11 @@ th {
 .table-striped > tbody > tr:nth-of-type(odd) {
   background-color: #f9f9f9;
 }
-.table-hover > tbody > tr:hover {
-  background-color: #f5f5f5;
+.table-hover > tbody > tr:hover, 
+tr.table-hover {
+  background-color: #cfcfcf;
 }
+
 table col[class*="col-"] {
   position: static;
   display: table-column;

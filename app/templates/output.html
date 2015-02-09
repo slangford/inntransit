@@ -41,9 +41,111 @@
     }
     </script>
 
+    <script>
+      var side_bar_html = ""; 
+
+      var gmarkers = [];
+      var gicons = [];
+      var pinColor_nohover = "1D7BfD";
+      var pinColor_hover = "FD1D7B";
+      var map = null;
+
+      gicons["blue"] = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + pinColor_nohover,
+                new google.maps.Size(21, 34),
+                new google.maps.Point(0,0),
+                new google.maps.Point(10, 34));
+
+      gicons["pink"] = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + pinColor_hover,
+                new google.maps.Size(21, 34),
+                new google.maps.Point(0,0),
+                new google.maps.Point(10, 34));
+
+      function createMarker(latlng) {
+        //var contentString = html;
+        var marker = new google.maps.Marker({
+          position: latlng,
+          icon: gicons["blue"],
+          map: map,
+          //title: name,
+          zIndex: Math.round(latlng.lat()*-100000)<<5
+        });
+
+        google.maps.event.addListener(marker, "mouseover", function() {
+            hoverhotel(marker.hotelIDnum);
+//           marker.setIcon(gicons["pink"]);
+ //          document.getElementById("hotel-"+marker.hotelIDnum).className = "table-hover";
+        });
+        google.maps.event.addListener(marker, "mouseout", function() {
+             unhoverhotel(marker.hotelIDnum);
+ //         marker.setIcon(gicons["blue"]);
+ //         document.getElementById("hotel-"+marker.hotelIDnum).className = "";
+        });
+        gmarkers.push(marker);
+
+        var marker_num = gmarkers.length-1;
+        //side_bar_html += '<a href=onmouseover="gmarkers['+marker_num+'].setIcon(gicons.yellow)" onmouseout="gmarkers['+marker_num+'].setIcon(gicons.blue)">' + name + '<\/a><br>';
+        side_bar_html += '<a href="javascript:myclick(' + marker_num + ') "onmouseover="gmarkers['+marker_num+'].setIcon(gicons.yellow)" onmouseout="gmarkers['+marker_num+'].setIcon(gicons.blue)"><\/a><br>';
+        return marker;
+      }
+   
+      markerdict = {};
+
+      function initialize() {
+        var moscone = new google.maps.LatLng(37.783944, -122.401297);
+        var mapOptions = {
+          zoom: 13,
+          center: moscone
+        }
+        map = new google.maps.Map(document.getElementById('map-container'), mapOptions);
+ 
+        markers_lat = {{ marker_lat }};
+        markers_lon = {{ marker_lon }};
+        markers_ID = {{ marker_ID }};
+        //markers_name = {{  hotel_results['name'] }};
+
+        for (var i = 0; i < markers_lat.length; i++) {
+          var lat = parseFloat(markers_lat[i]);
+          var lng = parseFloat(markers_lon[i]);
+          var point = new google.maps.LatLng(lat,lng);
+          //var label = markers_name[i];
+          //var marker = createMarker(point,label);
+          var marker = createMarker(point);
+          marker.hotelIDnum = markers_ID[i];
+          markerdict[marker.hotelIDnum] = marker;
+        }
+        //document.getElementById("side_bar").innerHTML = side_bar_html;
+            
+        var pinColor = "02CC77";
+        var pinImage = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + pinColor,
+            new google.maps.Size(21, 34),
+            new google.maps.Point(0,0),
+            new google.maps.Point(10, 34));
+        var marker = new google.maps.Marker({
+            position: moscone,
+            map: map,
+            title: 'Moscone Center',
+            icon: pinImage
+        });
+      }
+      google.maps.event.addDomListener(window, 'load', initialize);
+    </script>
+
+    <script>
+    function hoverhotel(hotelIDnum){
+      var hotelelement = document.getElementById("hotel-"+hotelIDnum)
+      markerdict[hotelIDnum].setZIndex(google.maps.Marker.MAX_ZINDEX + 1);
+      markerdict[hotelIDnum].setIcon(gicons["pink"]);
+      hotelelement.className = "table-hover";
+    }
+    function unhoverhotel(hotelIDnum){
+      markerdict[hotelIDnum].setIcon(gicons["blue"]);
+      document.getElementById("hotel-"+hotelIDnum).className = "";
+    }
+    </script>
+
   </head>
 
-    <body id="wrapper_output">
+    <body id="wrapper_output" onload="initialize()">
 
     <div class="banner">
         <h1 style="font-size:30pt">Inn Transit<img src="/static/images/businessman.png" width=40px></h1>
@@ -58,15 +160,20 @@
 
     <div class="row">
 
-      <div class="col-md-6 col-md-offset-1"  style="background-color: white; opacity: 0.85" >
+      <div class="col-md-6 col-md-offset-1"  style="background-color: white; opacity: 0.85; overflow:auto; height:808px" >
         <br>
-        <br>
-
-        <table class="sortable" >
-        <tr><th></th><th></th><th><a class="btn btn-default">sort by PRICE</a></th><th></th><th><a class="btn btn-default">sort by TIME</a></th><th></th></tr> 
+        <br> 
+        <table class="sortable">
+        <tr><th></th><th>Hotel Results</th><th><a class="btn btn-default">sort by PRICE</a></th><th></th><th><a class="btn btn-default">sort by TIME</a></th><th></th></tr> 
         {% for item in hotel_results %}
-
-        <tr id={{ item['hotelidarray'] }} data-bind="event: {mouseover: hovered, mouseleave: unhovered}"><td style="padding:20px"><img src={{ item['image'] }}></td><td> <b>{{ item['name'] }} </b><br> {% for i in range(item['rating']) %} &#9733; {% endfor %} <br> <a href={{ item['link'] }} target="_blank">Book it now!</a></td><td class="hidden">{{ item['rate'] }}</td><td>${{ item['rate'] }} <br> avg nightly</td><td class="hidden">{{ item['maxtime'] }}</td><td>{{ item['maxtime'] }} mins</td></tr>
+        <tr id="hotel-{{ item['hotelidarray'] }}" onmouseenter="hoverhotel({{ item['hotelidarray'] }})" onmouseout="unhoverhotel({{ item['hotelidarray'] }})" >
+          <td style="padding:20px"><img src={{ item['image'] }}></td>
+          <td> <b>{{ item['name'] }} </b><br> {% for i in range(item['rating']) %} &#9733; {% endfor %} <br> <a href={{ item['link'] }} target="_blank">Book it now!</a></td>
+          <td  class="hidden">{{ item['rate'] }}</td>
+          <td>${{ item['rate'] }} <br> avg nightly</td>
+          <td class="hidden">{{ hotelthreshold[item['hotelidarray']] }}</td>
+          <td> {{ hotelthreshold[item['hotelidarray']] }} mins</td>
+        </tr>
         {% endfor %}
         </table>
       </div>
@@ -74,26 +181,26 @@
       <div class="container col-md-4" style="background-color: white; opacity: 0.85">
 
         <br><br><br>
-      <div id="map-container" ></div>        
-        <script>  
-          markers_lat = {{ marker_lat }};
-          markers_lon = {{ marker_lon }};
+        <div id="map-container" ></div>        
+        <!--<script>  
+          //markers_lat = {{ marker_lat }};
+          //markers_lon = {{ marker_lon }};
 
-          var pinColor_nohover = "1D7BfD";
-          var pinImage_nohover = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + pinColor_nohover,
-                new google.maps.Size(21, 34),
-                new google.maps.Point(0,0),
-                new google.maps.Point(10, 34));
-          var pinColor_hover = "FD1D7B";
-          var pinImage_hover = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + pinColor_hover,
-                new google.maps.Size(21, 34),
-                new google.maps.Point(0,0),
-                new google.maps.Point(10, 34));
+          //var pinColor_nohover = "1D7BfD";
+          //var pinImage_nohover = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + pinColor_nohover,
+          //      new google.maps.Size(21, 34),
+          //      new google.maps.Point(0,0),
+          //      new google.maps.Point(10, 34));
+          //var pinColor_hover = "FD1D7B";
+          //var pinImage_hover = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + pinColor_hover,
+          //      new google.maps.Size(21, 34),
+          //      new google.maps.Point(0,0),
+          //      new google.maps.Point(10, 34));
 
-          var markerArray = [];      
-          for (var i = 0; i < markers_lat.length; i++) {
-              markerArray.push(new google.maps.LatLng(markers_lat[i],markers_lon[i]));
-          }
+          //var markerArray = [];      
+          //for (var i = 0; i < markers_lat.length; i++) {
+          //    markerArray.push(new google.maps.LatLng(markers_lat[i],markers_lon[i]));
+          //}
 
           function initialize() {
             var moscone = new google.maps.LatLng(37.783944, -122.401297);
@@ -101,40 +208,41 @@
               zoom: 13,
               center: moscone
             }
-            var map = new google.maps.Map(document.getElementById('map-container'), mapOptions);
-            for (var i = 0; i < markers_lat.length; i++) {
-               var marker = new google.maps.Marker({
-               position: markerArray[i],
-               map: map,
-               icon: pinImage_nohover
-            });
-
-            google.maps.event.addListener(marker, 'mouseover', (function(marker, i) {
-            return function() {
-                marker.setIcon(pinImage_hover);
-            }
-            })(marker, i));
-            google.maps.event.addListener(marker, 'mouseout', (function(marker, i) {
-            return function() {
-                marker.setIcon(pinImage_nohover);
-            }
-            })(marker, i));
-
-            }
-            var pinColor = "1DFD9F";
-            var pinImage = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + pinColor,
-              new google.maps.Size(21, 34),
-              new google.maps.Point(0,0),
-              new google.maps.Point(10, 34));
-            var marker = new google.maps.Marker({
-              position: moscone,
-              map: map,
-              title: 'Moscone Center',
-              icon: pinImage
-            });
+           var map = new google.maps.Map(document.getElementById('map-container'), mapOptions);
           }
+          // for (var i = 0; i < markers_lat.length; i++) {
+          //    var marker = new google.maps.Marker({
+          //     position: markerArray[i],
+          //     map: map,
+          //      icon: pinImage_nohover
+          //   });
+
+          //    google.maps.event.addListener(marker, 'mouseover', (function(marker, i) {
+          //      return function() {
+          //        marker.setIcon(pinImage_hover);
+
+          //      }
+          //    })(marker, i));
+          //    google.maps.event.addListener(marker, 'mouseout', (function(marker, i) {
+          //      return function() {
+          //        marker.setIcon(pinImage_nohover);
+          //      }
+          //    })(marker, i));
+          //  }
+          //  var pinColor = "1DFD9F";
+          //  var pinImage = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + pinColor,
+          //    new google.maps.Size(21, 34),
+          //    new google.maps.Point(0,0),
+          //    new google.maps.Point(10, 34));
+          //  var marker = new google.maps.Marker({
+          //    position: moscone,
+          //    map: map,
+          //    title: 'Moscone Center',
+          //   icon: pinImage
+          //  });
+          //}
          google.maps.event.addDomListener(window, 'load', initialize);
-      </script>
+      </script>-->
         <br>
         <form class="form-inline" action="/output" method="GET" style="background-color: #005ab2; opacity: 0.75">
                   <br> <br>

@@ -56,7 +56,9 @@ def output():
     hotelinsidelist = pickle.load(hotelId_file)
     hotelId_file.close()
 
-    threshold_hotel = dict(zip(hotelinsidelist, ['20']*len(hotelinsidelist)))
+    hotelthreshold_file = open('osm_hotel_threshold_san_francisco.pk1', 'rb')
+    hotelthreshold = pickle.load(hotelthreshold_file)
+    hotelthreshold_file.close()
 
     ## URL to call expedia API : input startdate and enddate
     expedia_api_url = 'http://dev.api.ean.com/ean-services/rs/hotel/v3/list?cid=55505&apiKey=9nkuwbprt9fwrrcesqa22r27&customerUserAgent=Mozilla%2F5.0%20(Macintosh%3B%20Intel%20Mac%20OS%20X%2010_10_1)%20AppleWebKit%2F537.36%20(KHTML%2C%20like%20Gecko)%20Chrome%2F39.0.2171.95%20Safari%2F537.36&customerIpAddress=65.87.19.170&apiExperience=PARTNER_BOT_CACHE&arrivalDate='
@@ -74,14 +76,16 @@ def output():
     # make lists of hotel details to return to output page
     hotel_results = []
     marker_lon = []
-    marker_lat = []
+    marker_lat = [] 
+    marker_ID = []
     for hotel in expedia_api_jsondata['HotelListResponse']['HotelList']['HotelSummary']:
       marker_lat.append(hotel['latitude'])    
       marker_lon.append(hotel['longitude'])
+      marker_ID.append(hotel['hotelId'])
       image = "http://images.travelnow.com"+hotel['thumbNailUrl']
       rate = "%.2f" % float(hotel['RoomRateDetailsList']['RoomRateDetails']['RateInfo']['ChargeableRateInfo']['@averageRate'])
-      hotel_results.append(dict(hotelidarray=hotel['hotelId'],name=hotel['name'],address=hotel['address1'],rating=int(hotel['hotelRating']),description=hotel['shortDescription'],image=image,link=hotel['deepLink'],rate=rate, maxtime=threshold_hotel[hotel['hotelId']]))
-    return render_template("output.html", hotel_results=hotel_results, strdate=strID, enddate=endID, marker_lat=marker_lat, marker_lon=marker_lon, threshold=threshold)
+      hotel_results.append(dict(hotelidarray=hotel['hotelId'],name=hotel['name'],address=hotel['address1'],rating=int(hotel['hotelRating']),description=hotel['shortDescription'],image=image,link=hotel['deepLink'],rate=rate))
+    return render_template("output.html", hotel_results=hotel_results, strdate=strID, enddate=endID, marker_lat=marker_lat, marker_lon=marker_lon, marker_ID=marker_ID, hotelthreshold=hotelthreshold)
 
 if __name__ == "__main__":
   app.run()
