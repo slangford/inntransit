@@ -22,8 +22,17 @@
     <script src="//code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
 
     <script>
-    $(function() {
-    $( "#strdate" ).datepicker(); $( "#enddate" ).datepicker();
+    $(document).ready(function() {
+      $( "#strdate" ).datepicker({ 
+        onSelect: function(selected) { 
+          $("#enddate").datepicker("option","minDate", selected)
+       }
+      });
+      $( "#enddate" ).datepicker({ 
+        onSelect: function(selected) { 
+          $("#strdate").datepicker("option","maxDate", selected)
+       }
+      });
     });
     </script>
 
@@ -68,16 +77,18 @@
           <p style="color:white" > Max Transit Time </p>
           <label for="ttime"></label>
             <select id="dropdownMenu2" onchange="run()">  
-            <option value="5"> &nbsp;&nbsp;5 mins&nbsp; </option>
-            <option value="10"> &nbsp;&nbsp;10 mins&nbsp; </option>
-            <option value="15"> &nbsp;&nbsp;15 mins&nbsp; </option>
-            <option value="20"> &nbsp;&nbsp;20 mins&nbsp; </option>
-            <option value="25"> &nbsp;&nbsp;25 mins&nbsp; </option>
-            <option value="30"> &nbsp;&nbsp;30 mins&nbsp; </option>
-            <option value="35"> &nbsp;&nbsp;35 mins&nbsp; </option>
-            <option value="40"> &nbsp;&nbsp;40 mins&nbsp; </option>
-            <option value="45"> &nbsp;&nbsp;45 mins&nbsp; </option>
             <option value="60"> &nbsp;&nbsp;60 mins&nbsp; </option>
+            <option value="55"> &nbsp;&nbsp;55 mins&nbsp; </option>
+            <option value="50"> &nbsp;&nbsp;50 mins&nbsp; </option>
+            <option value="45"> &nbsp;&nbsp;45 mins&nbsp; </option>
+            <option value="40"> &nbsp;&nbsp;40 mins&nbsp; </option>
+            <option value="35"> &nbsp;&nbsp;35 mins&nbsp; </option>
+            <option value="30"> &nbsp;&nbsp;30 mins&nbsp; </option>
+            <option value="25"> &nbsp;&nbsp;25 mins&nbsp; </option>
+            <option value="20"> &nbsp;&nbsp;20 mins&nbsp; </option>
+            <option value="15"> &nbsp;&nbsp;15 mins&nbsp; </option>
+            <option value="10"> &nbsp;&nbsp;10 mins&nbsp; </option>
+            <option value="5"> &nbsp;&nbsp;5 mins&nbsp; </option>
           </select>
           <br>
           <input type="hidden" class=text-center type="number" id="ttime" name='ttime' placeholder="20 mins">
@@ -92,12 +103,6 @@
     </div>
 
     </div><!-- /.container -->
-
-
-
-
-
-
 
     <!-- Bootstrap core JavaScript
     ================================================== -->

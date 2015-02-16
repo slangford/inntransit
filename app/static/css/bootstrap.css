@@ -37,6 +37,9 @@ table.sortable thead {
 .map {
     padding: 0px;
 }
+#content {
+  height:15px;
+}
 .banner{
     height:80px;
     text-align: right;
